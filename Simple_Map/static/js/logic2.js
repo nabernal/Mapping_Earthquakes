@@ -1,7 +1,4 @@
-// Add console.log to check to see if our code is working.
-console.log("working");
-
-// We create the map object with options.
+// Create the map object with center and zoom level.
 let map = L.map('mapid').setView([30, 30], 2);
 
 // We create the tile layer that will be the background of our map.
@@ -10,16 +7,21 @@ let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/t
 	maxZoom: 18,
 	accessToken: API_KEY
 });
-
 // Then we add our 'streets' tile layer to the map.
 streets.addTo(map);
 
 // Accessing the airport GeoJSON URL
-let airportData = "https://raw.githubusercontent.com/nabernal/Mapping_Earthquakes/main/majorAirports.json";
+let airportData = "https://raw.githubusercontent.com/nabernal/Mapping_Earthquakes/master/majorAirports.json";
 
-// Grabbing our GeoJSON data.
 d3.json(airportData).then(function(data) {
     console.log(data);
   // Creating a GeoJSON layer with the retrieved data.
-  L.geoJSON(data).addTo(map);
+  L.geoJson(data, {
+		onEachFeature: function(feature, layer) {
+			console.log(layer);
+			layer.bindPopup("<h3> Airport code: " + feature.properties.faa + "</h3> <hr><h3> Airport name: "
+		 		+ feature.properties.name + "</h3>");
+		}
+	}).addTo(map);
 });
+
